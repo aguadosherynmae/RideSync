@@ -18,7 +18,7 @@ export class DriversService {
         private driverStatusRepository: Repository<DriverStatus>,
     ) {}
 
-    async createDriverProfile(userId: number, first_name: string, middle_name: string, last_name: string, route: string, age: number, plate_number: string, license_no: string, cell_num: string, driver_img?: string) {
+    async createDriverProfile(userId: number, first_name: string, middle_name: string, last_name: string, address: string, route: string, age: number, plate_number: string, license_no: string, cell_num: string, driver_img?: string) {
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (!user) {
           throw new NotFoundException('User not found');
@@ -28,6 +28,7 @@ export class DriversService {
             first_name,
             middle_name,
             last_name,
+            address,
             route,
             age,
             plate_number,
@@ -40,7 +41,7 @@ export class DriversService {
 
           const driverStatus = this.driverStatusRepository.create({
               driver_profile: savedDriverProfile, 
-              status: Status.OFF_DUTY, // Default status
+              status: Status.OFF_DUTY, 
           });
           await this.driverStatusRepository.save(driverStatus);
 

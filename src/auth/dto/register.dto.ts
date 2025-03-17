@@ -38,6 +38,11 @@ export class RegisterDto {
   @ValidateIf((o) => o.role === UserRole.DRIVER)
   @IsString()
   @IsNotEmpty()
+  address: string;
+
+  @ValidateIf((o) => o.role === UserRole.DRIVER)
+  @IsString()
+  @IsNotEmpty()
   route: string;
 
   @ValidateIf((o) => o.role === UserRole.DRIVER)

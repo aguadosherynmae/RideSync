@@ -31,6 +31,7 @@ export class AuthService {
               dto.first_name,
               dto.middle_name,
               dto.last_name,
+              dto.address,
               dto.route,
               dto.age,
               dto.plate_number,

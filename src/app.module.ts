@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { DriversModule } from './drivers/drivers.module';
 import { PassengersModule } from './passengers/passengers.module';
+import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { ViolationsModule } from './violations/violations.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { PassengersModule } from './passengers/passengers.module';
     AuthModule,
     DriversModule,
     PassengersModule,
+    FeedbacksModule,
+    ViolationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

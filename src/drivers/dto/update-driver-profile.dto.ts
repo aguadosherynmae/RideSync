@@ -15,6 +15,10 @@ export class UpdateDriverProfileDto {
 
   @IsString()
   @IsNotEmpty()
+  address: string;
+
+  @IsString()
+  @IsNotEmpty()
   route: string;
 
   @IsNumber()
