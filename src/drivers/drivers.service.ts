@@ -67,4 +67,14 @@ export class DriversService {
       Object.assign(driverStatus, updateStatus);
       return await this.driverStatusRepository.save(driverStatus);
     }
+    async getDriverProfile(userId: number) {
+      const driver = await this.driverRepository.findOne({
+          where: { user: { id: userId } }, 
+          relations: ['user'], 
+      });
+      if (!driver) {
+          throw new NotFoundException('Driver profile not found');
+      }
+      return driver;
+  }
 }
