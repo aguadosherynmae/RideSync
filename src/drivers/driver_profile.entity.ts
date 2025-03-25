@@ -3,6 +3,7 @@ import { DriverStatus } from './driver_status.entity';
 import { Feedback } from 'src/feedbacks/feedback.entity';
 import { Reports } from 'src/violations/reports.entity';
 import { Record } from 'src/violations/driver_violation.entity';
+import { PassengerViolation } from 'src/violations/passenger_violation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
   
 @Entity()
@@ -14,14 +15,16 @@ export class DriverProfile  {
   @OneToOne(() => User, (user) => user.driverProfile , { onDelete: 'CASCADE' }) 
   @JoinColumn({ name: 'userId' })
   user: User;
-  @OneToOne(() => DriverStatus, (driverStatus) => driverStatus.driver_profile,  { cascade: true})
+  @OneToOne(() => DriverStatus, (driverStatus) => driverStatus.driver,  { cascade: true})
   driverStatus: DriverStatus;
   @OneToMany(() => Feedback, (feedback) => feedback.driver, { cascade: true })
   feedback: Feedback[];
   @OneToMany(() => Reports, (reports) => reports.driver, { cascade: true })
   reports: Reports[];
-  @OneToMany(() => Record, (record) => record.violation, { cascade: true })
+  @OneToMany(() => Record, (record) => record.driver, { cascade: true })
   record: Record[];
+  @OneToMany(() => PassengerViolation, (passenger_violation) => passenger_violation.driver, { cascade: true })
+  passenger_violation: PassengerViolation[];
 
   @Column()
   first_name: string;

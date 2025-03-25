@@ -7,6 +7,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { DriversService } from 'src/drivers/drivers.service';
+import { UpdateDto } from './dto/update.dto';
 
 @Injectable()
 export class AuthService {
@@ -56,5 +57,25 @@ export class AuthService {
             id: user.id, 
             email: user.email, 
         };
+    }
+    async updateCredentials(id: number, updateDto: Partial<UpdateDto> & { currentPassword?: string }) {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+        if (updateDto.password) {
+            if (!updateDto.currentPassword) {
+                throw new BadRequestException('Current password is required to change password');
+            }
+
+            const isMatch = await bcrypt.compare(updateDto.currentPassword, user.password);
+            if (!isMatch) {
+                throw new BadRequestException('Current password is incorrect');
+            }
+
+            updateDto.password = await bcrypt.hash(updateDto.password, 10);
+        }
+        Object.assign(user, updateDto);
+        return await this.userRepository.save(user);
     }
 }

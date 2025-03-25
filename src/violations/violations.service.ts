@@ -12,6 +12,8 @@ import { ReportDto } from './dto/report.dto';
 import { Reports } from './reports.entity';
 import { Record } from './driver_violation.entity';
 import { RecordDto } from './dto/violation_record.dto';
+import { PassengerViolation } from './passenger_violation.entity';
+import { PassengerViolationDto } from './dto/passenger_violation.dto';
 
 @Injectable()
 export class ViolationsService {
@@ -33,6 +35,9 @@ export class ViolationsService {
 
         @InjectRepository(Record)
         private recordRepository: Repository<Record>,
+
+        @InjectRepository(PassengerViolation)
+        private passengerViolationRepository: Repository<PassengerViolation>,
     ) {}
     async createViolation(violationDto: ViolationDto) {
         const { name, severity } = violationDto;
@@ -119,5 +124,26 @@ export class ViolationsService {
         });
 
         return await this.recordRepository.save(record);
+    }
+    async createPassengerViolation(passenger_violationDto: PassengerViolationDto) {
+        const {userId, driverId, violation} = passenger_violationDto;
+        
+        const user = await this.passengerViolationRepository.findOne({ where: { id: userId } });
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+
+        const driver = await this.passengerViolationRepository.findOne({ where: { id: driverId } });
+        if (!driver) {
+          throw new NotFoundException('Driver not found');
+        }
+
+        const passenger_violation = this.passengerViolationRepository.create({
+            user,
+            driver,
+            violation
+        });
+
+        return await this.passengerViolationRepository.save(passenger_violation);
     }
 }

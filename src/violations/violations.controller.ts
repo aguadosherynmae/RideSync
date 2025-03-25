@@ -4,6 +4,7 @@ import { ViolationDto } from './dto/violation.dto';
 import { RiskDto } from './dto/risk.dto';
 import { ReportDto } from './dto/report.dto';
 import { RecordDto } from './dto/violation_record.dto';
+import { PassengerViolationDto } from './dto/passenger_violation.dto';
 
 @Controller('violations')
 export class ViolationsController {
@@ -31,12 +32,16 @@ export class ViolationsController {
   ) {
       return this.violationService.editRisk(id, updateRisk);
   }
-  @Post('createReport')
+    @Post('createReport')
     async createReport(@Body() reportDto: ReportDto) {
         return this.violationService.createReport(reportDto);
     }
     @Post('createRecord')
     async createRecord(@Body() recordDto: RecordDto) {
         return this.violationService.createRecord(recordDto);
+    }
+    @Post('createPassengerViolation')
+    async createPassengerViolation(@Body() passenger_violationDto: PassengerViolationDto) {
+        return this.violationService.createPassengerViolation(passenger_violationDto);
     }
 }

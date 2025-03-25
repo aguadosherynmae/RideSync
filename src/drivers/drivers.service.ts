@@ -40,7 +40,7 @@ export class DriversService {
           const savedDriverProfile = await this.driverRepository.save(driverProfile);
 
           const driverStatus = this.driverStatusRepository.create({
-              driver_profile: savedDriverProfile, 
+              driver: savedDriverProfile, 
               status: Status.OFF_DUTY, 
           });
           await this.driverStatusRepository.save(driverStatus);

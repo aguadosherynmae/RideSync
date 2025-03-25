@@ -2,6 +2,7 @@ import { DriverProfile  } from 'src/drivers/driver_profile.entity';
 import { PassengerProfile } from 'src/passengers/passenger_profile.entity';
 import { Feedback } from 'src/feedbacks/feedback.entity';
 import { Reports } from 'src/violations/reports.entity';
+import { PassengerViolation } from 'src/violations/passenger_violation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
 
 export enum UserRole {
@@ -41,4 +42,7 @@ export class User {
 
   @OneToMany(() => Reports, (reports) => reports.user, { cascade: true })
   reports: Reports[];
+
+  @OneToMany(() => PassengerViolation, (passenger_violation) => passenger_violation.user, { cascade: true })
+  passenger_violation: PassengerViolation[];
 }

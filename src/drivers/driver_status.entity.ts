@@ -13,9 +13,9 @@ export class DriverStatus  {
   id: number;
 
   //Relationship
-  @OneToOne(() => DriverProfile, (driver_profile) => driver_profile.driverStatus , { onDelete: 'CASCADE' }) 
+  @OneToOne(() => DriverProfile, (driver) => driver.driverStatus , { onDelete: 'CASCADE' }) 
   @JoinColumn({ name: 'driver_Id' })
-  driver_profile: DriverProfile;
+  driver: DriverProfile;
 
   @Column({ type: 'enum', enum:  Status, default: Status.OFF_DUTY})
   status: Status;
