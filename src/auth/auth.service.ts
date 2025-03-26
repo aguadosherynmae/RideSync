@@ -27,7 +27,7 @@ export class AuthService {
             service: 'gmail',
             auth: {
                 user: 'ridesyncofficial@gmail.com',
-                pass: 'ieavrokujrwwxjkw'
+                pass: 'zyuvxqvlknewwsbj'
             },
         });
     }
@@ -143,5 +143,18 @@ export class AuthService {
         resetCode.delete(email);
         return {message: 'Password reset successful'};
     }
+    async verifyResetCode(email: string, code: string): Promise<{ message: string }> {
+        const stored = resetCode.get(email);
+        if (!stored) {
+          throw new BadRequestException('No reset code requested for this email.');
+        }
+        if (stored.code !== code) {
+          throw new BadRequestException('Invalid code');
+        }
+        if (Date.now() > stored.expires) {
+          throw new BadRequestException('Code expired');
+        }
+        return { message: 'Code verified successfully' };
+      }
 
 }

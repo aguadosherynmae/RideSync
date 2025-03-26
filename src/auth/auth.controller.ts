@@ -35,4 +35,11 @@ export class AuthController {
   ){
     return this.authService.resetPassword(email, code, password);
   }
+  @Post('verify-reset-code')
+async verifyResetCode(
+  @Body('email') email: string,
+  @Body('code') code: string,
+) {
+  return this.authService.verifyResetCode(email, code);
+}
 }
