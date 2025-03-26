@@ -4,6 +4,7 @@ import { Feedback } from 'src/feedbacks/feedback.entity';
 import { Reports } from 'src/violations/reports.entity';
 import { PassengerViolation } from 'src/violations/passenger_violation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { RequestRide } from 'src/passengers/request_ride.entity';
 
 export enum UserRole {
   PASSENGER = 'passenger',
@@ -45,4 +46,8 @@ export class User {
 
   @OneToMany(() => PassengerViolation, (passenger_violation) => passenger_violation.user, { cascade: true })
   passenger_violation: PassengerViolation[];
+
+  @OneToMany(() => RequestRide, (request) => request.user, { cascade: true })
+  request: RequestRide[];
+
 }

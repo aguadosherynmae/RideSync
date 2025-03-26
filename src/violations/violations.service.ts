@@ -146,4 +146,18 @@ export class ViolationsService {
 
         return await this.passengerViolationRepository.save(passenger_violation);
     }
+    async getPassengerViolations(userId: number) {
+      const violations = await this.passengerViolationRepository.find({
+          where: { user: { id: userId } },
+          relations: ['user', 'driver'],
+      });
+  
+      if (!violations.length) {
+          throw new NotFoundException(`No violations found`);
+      }
+  
+      return violations;
+  }
+  
+
 }

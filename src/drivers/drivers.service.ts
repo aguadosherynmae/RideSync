@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { DriverProfile } from './driver_profile.entity';
 import { User } from 'src/auth/user.entity';
 import { DriverStatus, Status } from './driver_status.entity';
+import { Bus, State } from './bus.entity';
 
 @Injectable()
 export class DriversService {
@@ -16,6 +17,9 @@ export class DriversService {
 
         @InjectRepository(DriverStatus)
         private driverStatusRepository: Repository<DriverStatus>,
+
+        @InjectRepository(Bus)
+        private busRepository: Repository<Bus>,
     ) {}
 
     async createDriverProfile(userId: number, first_name: string, middle_name: string, last_name: string, address: string, route: string, age: number, plate_number: string, license_no: string, cell_num: string, driver_img?: string) {
@@ -65,7 +69,23 @@ export class DriversService {
       }
       
       Object.assign(driverStatus, updateStatus);
-      return await this.driverStatusRepository.save(driverStatus);
+      const updatedDriverStatus = await this.driverStatusRepository.save(driverStatus);
+
+      if (updateStatus.status === 'in_transit') {
+        let bus = await this.busRepository.findOne({ where: { driver: { id } }, relations: ['driver'] });
+        if (!bus) {
+          bus = this.busRepository.create({
+              driver: driverStatus, 
+              state: State.BLUE,
+              issue_desc: '',
+          });
+      } else {
+          bus.state = State.BLUE;
+          bus.issue_desc = '';
+      }
+      await this.busRepository.save(bus); 
+    }
+    return updatedDriverStatus;
     }
     async getDriverProfile(userId: number) {
       const driver = await this.driverRepository.findOne({
@@ -76,5 +96,14 @@ export class DriversService {
           throw new NotFoundException('Driver profile not found');
       }
       return driver;
-  }
+    }
+    async editBusStatus(id: number, updateBus: Partial<Bus>) {
+      const bus_status = await this.busRepository.findOne({ where: { id } });
+      if (!bus_status) {
+          throw new NotFoundException('Bus not found');
+      }
+      
+      Object.assign(bus_status, updateBus);
+      return await this.busRepository.save(bus_status);
+    }
 }

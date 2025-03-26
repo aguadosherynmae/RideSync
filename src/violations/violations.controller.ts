@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ParseIntPipe, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, ParseIntPipe, Param, Put, Get } from '@nestjs/common';
 import { ViolationsService } from './violations.service';
 import { ViolationDto } from './dto/violation.dto';
 import { RiskDto } from './dto/risk.dto';
@@ -43,5 +43,9 @@ export class ViolationsController {
     @Post('createPassengerViolation')
     async createPassengerViolation(@Body() passenger_violationDto: PassengerViolationDto) {
         return this.violationService.createPassengerViolation(passenger_violationDto);
+    }
+    @Get('passengerViolation/:id')
+    async getPassengerViolations(@Param('id', ParseIntPipe) id: number) {
+        return this.violationService.getPassengerViolations(id);
     }
 }

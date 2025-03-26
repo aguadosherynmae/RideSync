@@ -8,6 +8,7 @@ import { DriversModule } from './drivers/drivers.module';
 import { PassengersModule } from './passengers/passengers.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ViolationsModule } from './violations/violations.module';
+import { CoopModule } from './coop/coop.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ViolationsModule } from './violations/violations.module';
     PassengersModule,
     FeedbacksModule,
     ViolationsModule,
+    CoopModule,
   ],
   controllers: [AppController],
   providers: [AppService],

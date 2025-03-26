@@ -63,6 +63,12 @@ export class AuthService {
         if (!user) {
             throw new BadRequestException('User not found');
         }
+
+        if (updateDto.email) {
+            console.log('Updating email to:', updateDto.email);
+            user.email = updateDto.email;
+        }
+
         if (updateDto.password) {
             if (!updateDto.currentPassword) {
                 throw new BadRequestException('Current password is required to change password');

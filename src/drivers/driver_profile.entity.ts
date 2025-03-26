@@ -5,6 +5,8 @@ import { Reports } from 'src/violations/reports.entity';
 import { Record } from 'src/violations/driver_violation.entity';
 import { PassengerViolation } from 'src/violations/passenger_violation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Bus } from './bus.entity';
+import { BoardingDetails } from 'src/passengers/boarding_details.entity';
   
 @Entity()
 export class DriverProfile  {
@@ -25,6 +27,10 @@ export class DriverProfile  {
   record: Record[];
   @OneToMany(() => PassengerViolation, (passenger_violation) => passenger_violation.driver, { cascade: true })
   passenger_violation: PassengerViolation[];
+  @OneToOne(() => Bus, (bus) => bus.driver,  { cascade: true})
+  bus: Bus;
+  @OneToMany(() => BoardingDetails, (boarding) => boarding.driver, { cascade: true })
+  boarding: BoardingDetails[];
 
   @Column()
   first_name: string;

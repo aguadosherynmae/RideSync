@@ -2,6 +2,7 @@ import { Controller, Body, Put, Param, ParseIntPipe, Get  } from '@nestjs/common
 import { DriversService  } from './drivers.service';
 import { UpdateDriverProfileDto } from './dto/update-driver-profile.dto';
 import { DriverStatusDto } from './dto/update-driver-status.dto';
+import { BusDto } from './dto/bus.dto';
 
 @Controller('drivers')
 export class DriversController {
@@ -26,5 +27,12 @@ export class DriversController {
   @Get('profile/:id')
     async getDriverProfile(@Param('id', ParseIntPipe) id: number) {
         return this.driversService.getDriverProfile(id);
+    }
+    @Put('editBusStatus/:id')
+    async editBusStatus(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateBus: BusDto
+    ) {
+        return this.driversService.editBusStatus(id, updateBus);
     }
 }
