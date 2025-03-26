@@ -23,4 +23,16 @@ export class AuthController {
   ) {
       return this.authService.updateCredentials(id, updateDto);
   }
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string ) {
+      return this.authService.forgotPassword(email);
+  }
+  @Post('reset-password')
+  async resetPassword(
+    @Body('email') email: string,
+    @Body('code') code: string,
+    @Body('password') password: string
+  ){
+    return this.authService.resetPassword(email, code, password);
+  }
 }

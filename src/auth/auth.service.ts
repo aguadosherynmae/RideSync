@@ -8,14 +8,29 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { DriversService } from 'src/drivers/drivers.service';
 import { UpdateDto } from './dto/update.dto';
+import * as nodemailer from 'nodemailer';
+
+
+const resetCode = new Map<string, {code: string; expires: number}>();
 
 @Injectable()
 export class AuthService {
+    private transporter;
+
     constructor(
-        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(User) 
+        private userRepository: Repository<User>,
         private jwtService: JwtService,
         private driversService: DriversService,
-    ) {}
+    ) {
+        this.transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'ridesyncofficial@gmail.com',
+                pass: 'ieavrokujrwwxjkw'
+            },
+        });
+    }
 
     async register(dto: RegisterDto) {
         const existingUser = await this.userRepository.findOne({ where: { email: dto.email } });
@@ -58,6 +73,7 @@ export class AuthService {
             email: user.email, 
         };
     }
+
     async updateCredentials(id: number, updateDto: Partial<UpdateDto> & { currentPassword?: string }) {
         const user = await this.userRepository.findOne({ where: { id } });
         if (!user) {
@@ -84,4 +100,48 @@ export class AuthService {
         Object.assign(user, updateDto);
         return await this.userRepository.save(user);
     }
+
+    async forgotPassword(email: string): Promise<{message: string}>{
+        const user = await this.userRepository.findOne({where: {email}});
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expires = Date.now() + 1000 * 60 * 15; 
+        resetCode.set(email, {code, expires});
+
+        const mailOptions = {
+            from: 'ridesyncofficial@gmail.com',
+            to: email,
+            subject: 'RideSync Password Reset',
+            text: `Your 6-digit password reset code is: ${code}\nThis code will expire in 15 minutes.`,
+    };
+    await this.transporter.sendMail(mailOptions);
+    return {message: 'Password reset code sent to email'};
+    }
+
+    async resetPassword(email: string, code: string, password: string): Promise<{message: string}>{
+        const stored = resetCode.get(email);
+        if (!stored) {
+            throw new BadRequestException('No reset code requested for this email.');
+        }
+        if (stored.code !== code) {
+            throw new BadRequestException('Invalid code');
+        }
+        if (Date.now() > stored.expires) {
+            throw new BadRequestException('Code expired');
+        }
+
+        const user = await this.userRepository.findOne({where: {email}});
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        user.password = await bcrypt.hash(password, 10);
+        await this.userRepository.save(user);
+        resetCode.delete(email);
+        return {message: 'Password reset successful'};
+    }
+
 }
