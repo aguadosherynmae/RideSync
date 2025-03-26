@@ -9,6 +9,8 @@ import { PassengersModule } from './passengers/passengers.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ViolationsModule } from './violations/violations.module';
 import { CoopModule } from './coop/coop.module';
+import { ArticlesModule } from './articles/articles.module';
+
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { CoopModule } from './coop/coop.module';
     FeedbacksModule,
     ViolationsModule,
     CoopModule,
+    ArticlesModule,
+ 
   ],
   controllers: [AppController],
   providers: [AppService],
